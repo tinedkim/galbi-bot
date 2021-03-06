@@ -14,7 +14,6 @@ async def on_ready():
 @client.event
 async def on_message(message):
     channel = message.channel
-
     if (message.author == client.user):
         return
     if (message.content.startswith("&gam")):
@@ -24,7 +23,7 @@ async def on_message(message):
     elif (message.content.startswith("&quiz")):
         await quiz.start(channel)
     elif (message.content.startswith("&stop")):
-        await  quiz.start(channel)
+        await  quiz.stop(channel)
     elif (quiz != None and quiz.started):
         await quiz.answer_question(message)
 

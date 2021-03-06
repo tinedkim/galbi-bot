@@ -10,6 +10,8 @@ class Quiz:
         self.questions = []
         self.current = None
         self.tries = 3
+        self.lives = 5
+        self.score = 0
         self.wins = 0
         self.started = False
         
@@ -35,6 +37,7 @@ class Quiz:
             self.questions.append(q)
 
     async def ask_question(self, channel):
+        self.tries = 3
         self.current = self.questions[random.randint(0, len(self.questions) - 1)]
         await channel.send('Question: {}'.format(self.current.question))
     
@@ -46,13 +49,23 @@ class Quiz:
         self.started = False
 
     async def answer_question(self,message):
-        if (self.started and self.current is not None):
-            if (self.current.is_correct(message.content)):
-                await message.channel.send("YOU GOT IT CORRECT")
-                self.wins += 1
-            else:
-                self.tries -= 1
-                await message.channel.send("Wrong :( You have {} tries left".format(str(self.tries)))
-        await self.ask_question(message.channel)
+        finished = False
+        if (not finished):
+            if (self.started and self.current is not None):
+                if (self.current.is_correct(message.content)):
+                    await message.channel.send("YOU GOT IT CORRECT")
+                    finished = True
+                    self.wins += 1
+                else:
+                    self.tries -= 1
+                    if (self.tries < 1):
+                        finished = True
+                        await message.channel.send("You ran out of tries. The answer was : {}".format(self.current.answer))
+                    else:
+                        await message.channel.send("Wrong :( You have {} tries left".format(str(self.tries)))
+        if (finished):
+            await message.channel.send("Next question in 5 seconds")
+            await asyncio.sleep(5)
+            await self.ask_question(message.channel)
     
     
