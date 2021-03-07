@@ -21,13 +21,14 @@ async def on_message(message):
     elif (message.content.startswith("&goguma")):
         await channel.send("christine says hi gam")
     elif (message.content.startswith("&quiz")):
-        await quiz.start(channel)
+        if (quiz.started):
+            await channel.send("You started a quiz already!")
+        else:
+            await quiz.start(channel)
     elif (message.content.startswith("&stop")):
         await  quiz.stop(channel)
     elif (quiz != None and quiz.started):
         await quiz.answer_question(message)
-
-
 
 client.run(token)
 '''
