@@ -7,22 +7,27 @@ client = discord.Client()
 quiz = q.Quiz(client)
 token = os.getenv('DISCORD_BOT_TOKEN')
 
+client.run(token)
+
 @client.event
 async def on_ready():
     print(f'{client.user.name} has connected to Discord!')
 
-@client.event
-async def on_message(message):
-    channel = message.channel
-    if (message.author == client.user):
-        return
-    if (message.content.startswith("&command1")):
-        await channel.send("sends something back")
-    elif (message.content.startswith("&command2")):
-        await channel.send("sends something back")
-    elif (message.content.startswith("&command3")):
-        await quiz.start(channel)
-    elif (message.content.startswith("&stop")):
-        await quiz.stop(channel)
+@bot.command(name = "gam")
+async def gam(ctx):
+    await ctx.send("kyle says hi goguma")
 
-client.run(token)
+@bot.command(name = "goguma")
+async def gam(ctx):
+    await ctx.send("christine says hi gam")
+
+@bot.command(name = "quiz")
+async def start(ctx):
+    await quiz.start()
+
+@bot.event
+async def wait(ctx):
+    if (quiz != None and quiz.started):
+        await quiz.answer_question(ctx)
+        
+bot.run(token)
